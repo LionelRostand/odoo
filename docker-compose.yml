@@ -6,11 +6,6 @@ services:
       - mydb
     ports:
       - "8069:8069"
-    image2: odoo:14.0
-    depends_on:
-      - mydb
-    ports:
-      - "8070:8069"
     environment:
     - HOST=mydb
     - USER=odoo
