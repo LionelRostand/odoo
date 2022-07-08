@@ -6,7 +6,7 @@ services:
       - mydb
     ports:
       - "8069:8069"
-    image: odoo:14.0
+    image2: odoo:14.0
     depends_on:
       - mydb
     ports:
