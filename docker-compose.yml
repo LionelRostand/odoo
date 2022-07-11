@@ -10,9 +10,11 @@ services:
     - HOST=mydb
     - USER=odoo
     - PASSWORD=myodoo
+    restart: always
   mydb:
     image: postgres:13
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=myodoo
       - POSTGRES_USER=odoo
+    restart: always
