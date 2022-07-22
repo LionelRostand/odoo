@@ -7,6 +7,7 @@ services:
     ports:
       - "8069:8069"
     volumes:
+      - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
     environment:
     - HOST=mydb
@@ -20,5 +21,9 @@ services:
       - POSTGRES_PASSWORD=myodoo
       - POSTGRES_USER=odoo
     volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
       - ./pg_hba.conf:/var/lib/postgresql/data/pgdata/pg_hba.conf
     restart: always
+volumes:
+  odoo-web-data:
+  odoo-db-data:
