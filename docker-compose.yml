@@ -6,6 +6,8 @@ services:
       - mydb
     ports:
       - "8069:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
     environment:
     - HOST=mydb
     - USER=odoo
@@ -17,4 +19,6 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=myodoo
       - POSTGRES_USER=odoo
+    volumes:
+      -./pg_hba.conf:/var/lib/postgresql/data/pgdata/pg_hba.conf
     restart: always
