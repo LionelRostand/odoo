@@ -22,5 +22,5 @@ services:
     restart: always
 volumes:
   odoo-web-data:
-    external: true
+    
   
