@@ -4,17 +4,12 @@ services:
     image: odoo:15.0
     replicas: 1
   	labels:
-         - "traefik.port=80"
-         - "traefik.weight=10"
-         - "traefik.frontend.rule=PathPrefixStrip:/;"
-         - "traefik.docker.network=wp"
-         - "traefik.frontend.entryPoints=https"
-         - "traefik.enable=true"
-         - "traefik.passHostHeader=true"
-         - "traefik.backend=wordpress"
-         - "traefik.backend.loadbalancer.method=drr"
-         - "traefik.backend.loadbalancer.stickiness=true"
-         - "traefik.backend.loadbalancer.stickiness.cookieName=wp-monster"
+      traefik.enable: true
+      traefik.docker.network: traefik_web
+      traefik.http.routers.wordpress.entrypoints: websecure
+      traefik.http.routers.wordpress.rule: 'Host(`www.youtech-consulting.com`)'
+      traefik.http.services.wordpress.loadbalancer.server.port: 80
+volumes:
     depends_on:
       - mydb
     ports:
