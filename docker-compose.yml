@@ -2,6 +2,19 @@ version: '3.1'
 services:
   web:
     image: odoo:15.0
+    replicas: 1
+  	labels:
+         - "traefik.port=80"
+         - "traefik.weight=10"
+         - "traefik.frontend.rule=PathPrefixStrip:/;"
+         - "traefik.docker.network=wp"
+         - "traefik.frontend.entryPoints=https"
+         - "traefik.enable=true"
+         - "traefik.passHostHeader=true"
+         - "traefik.backend=wordpress"
+         - "traefik.backend.loadbalancer.method=drr"
+         - "traefik.backend.loadbalancer.stickiness=true"
+         - "traefik.backend.loadbalancer.stickiness.cookieName=wp-monster"
     depends_on:
       - mydb
     ports:
