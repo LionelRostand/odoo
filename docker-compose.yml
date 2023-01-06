@@ -11,11 +11,14 @@ services:
     - USER=odoo
     - PASSWORD=myodoo
     labels:
-      traefik.enable: true
-      traefik.docker.network: traefik_web
-      traefik.http.routers.wordpress.entrypoints: websecure
-      traefik.http.routers.wordpress.rule: 'Host(`www.youtech-consulting.com`)'
-      traefik.http.services.wordpress.loadbalancer.server.port: 80
+      - 'traefik.http.routers.odoo.rule=Host(`www.youtech-consulting.com`)'
+      - 'traefik.http.routers.odoo.entrypoints=websecure'
+      - 'traefik.http.routers.odoo.tls.certresolver=odoo'
+      - 'traefik.port=8069'
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
   mydb:
     image: postgres:13
     environment:
