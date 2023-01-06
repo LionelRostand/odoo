@@ -1,28 +1,38 @@
 version: '3.1'
 services:
   web:
-    image: odoo:15.0
+    image: odoo:14.0
+	container_name: odoo
     depends_on:
-      - mydb
+      - db
     ports:
       - "8069:8069"
+	tty: true
+    command: -- --dev=reload
     environment:
-    - HOST=mydb
-    - USER=odoo
-    - PASSWORD=myodoo
-    labels:
-      - 'traefik.http.routers.odoo.rule=Host(`www.youtech-consulting.com`)'
+      - HOST=db
+      - USER=${ODOO_USER}
+      - PASSWORD=${ODOO_PASS}
+	volumes:
+      - /app/extra-addons:/mnt/extra-addons  
+      - /app/odoo/config:/etc/odoo
+	restart: always  
+	labels:
+      - 'traefik.http.routers.odoo.rule=Host(`odoo.youtech-consulting.com')'
       - 'traefik.http.routers.odoo.entrypoints=websecure'
       - 'traefik.http.routers.odoo.tls.certresolver=odoo'
-      - 'traefik.port=8069'
+      - "traefik.http.services.odoo.loadbalancer.server.port=8069"
       - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
       - "traefik.http.routers.http-catchall.entrypoints=web"
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-  mydb:
+  db:
     image: postgres:13
+	container_name: pstgres
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=myodoo
+      - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
-  
+	ports:
+	  - '5432:5432'
+	restart: always
