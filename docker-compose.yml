@@ -1,47 +1,23 @@
-version: "3"
+version: '2'
 services:
-  odoo:
+  web:
     image: odoo:15.0
     depends_on:
       - db
-    restart: unless-stopped
-    networks:
-      - internal
     ports:
       - "8069:8069"
-      - "8072:8072"
-    environment:
-      - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
     volumes:
-      - ./odoo/odoo-web-data:/var/lib/odoo
-      - ./odoo/config:/etc/odoo
-      - ./odoo/addons:/mnt/extra-addons
-      - ./odoo/logs:/var/log/odoo
-    labels:
-      - 'traefik.http.routers.odoo.rule=Host(`www.youtech-consulting.com`)'
-      - 'traefik.http.routers.odoo.entrypoints=websecure'
-      - 'traefik.http.routers.odoo.tls.certresolver=odoo'
-      - 'traefik.port=8069'
-      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
-      - "traefik.http.routers.http-catchall.entrypoints=web"
-      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
   db:
     image: postgres:10
-    restart: unless-stopped
-    networks:
-      - internal
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./pgdata:/var/lib/postgresql/data/pgdata
-
-networks:
-  internal:
-  web:
-      external: true
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+volumes:
+  odoo-web-data:
+  odoo-db-data:
